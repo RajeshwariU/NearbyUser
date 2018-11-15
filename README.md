@@ -5,6 +5,8 @@
 [![License](https://img.shields.io/cocoapods/l/NearbyUser.svg?style=flat)](https://cocoapods.org/pods/NearbyUser)
 [![Platform](https://img.shields.io/cocoapods/p/NearbyUser.svg?style=flat)](https://cocoapods.org/pods/NearbyUser)
 
+This library is used to find nearby user from your current location with respect to your radius.
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
