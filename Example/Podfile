@@ -1,0 +1,6 @@
+use_frameworks!
+target 'NearbyUser_Tests' do
+  pod 'NearbyUser', :path => '../'
+  
+  
+end
