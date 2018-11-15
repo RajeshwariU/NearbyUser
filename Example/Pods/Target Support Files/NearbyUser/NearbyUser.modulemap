@@ -1,0 +1,6 @@
+framework module NearbyUser {
+  umbrella header "NearbyUser-umbrella.h"
+
+  export *
+  module * { export * }
+}

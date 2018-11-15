@@ -1,0 +1,16 @@
+PODS:
+  - NearbyUser (0.1.0)
+
+DEPENDENCIES:
+  - NearbyUser (from `../`)
+
+EXTERNAL SOURCES:
+  NearbyUser:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  NearbyUser: 7e27a120eabf05ba8c5359ffb5ca9e3e5bd3f308
+
+PODFILE CHECKSUM: 6064c87eac19b13ddb268d91a00d7b23c5fa9e39
+
+COCOAPODS: 1.5.3

@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'NearbyUser'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of NearbyUser.'
+  s.summary          = 'Used to find the nearby users.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+TODO: This library is used to find the nearByUsers from your current location.
                        DESC
 
   s.homepage         = 'https://github.com/RajeshwariU/NearbyUser'
@@ -29,14 +29,17 @@ TODO: Add long description of the pod here.
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '8.0'
-
+  s.static_framework = true
   s.source_files = 'NearbyUser/Classes/**/*'
-  
+  s.requires_arc     = true
+  s.swift_version = '4.0'
   # s.resource_bundles = {
   #   'NearbyUser' => ['NearbyUser/Assets/*.png']
   # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  s.dependency 'GoogleMaps'
+  s.dependency 'GooglePlaces'
+  s.dependency 'SDWebImage', '~> 4.0'
 end
