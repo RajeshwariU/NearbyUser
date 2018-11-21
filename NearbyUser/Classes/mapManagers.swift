@@ -39,8 +39,6 @@ import SDWebImage
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         locationManager.stopUpdatingLocation()
         locationManager.startUpdatingLocation()
-        let location = manager.location?.coordinate
-        cameraMoveToLocation(toLocation: location, googleMapView: commonGoogleMapView)
     }
     
     // MARK: - Public methods
@@ -61,11 +59,16 @@ import SDWebImage
             commonGoogleMapView = googleMapView
             commonGoogleMapView.delegate = self
             locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.distanceFilter = 10
             locationManager.startMonitoringSignificantLocationChanges()
             locationManager.startUpdatingLocation()
             radiusString = getRadius
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                let location = self.locationManager.location?.coordinate
+                self.cameraMoveToLocation(toLocation: location, googleMapView: self.commonGoogleMapView)
+            }
+            
         }
         return commonGoogleMapView
     }
