@@ -24,7 +24,7 @@ import SDWebImage
     /// This variable is used to store only the user within the given radius
     var  visibleUser = [[String: String]]()
     /// This variable is used to store the current location of the user
-    var  currentLocationCoordinates = CLLocationCoordinate2D()
+    @objc public var  currentLocationCoordinates = CLLocationCoordinate2D()
     /// This variable is used set custom marker image
     @objc public var pinImage = UIImage()
     /// This variable is used to placeholder image

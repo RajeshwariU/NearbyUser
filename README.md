@@ -56,6 +56,8 @@ public var userInformation: [[String: String]] = []<br />
 public var pinImage = UIImage()<br />
 /// This variable is used for placeholder image inside the pin image <br />
 public var userPlaceholderImage = UIImage()
+/// This variable is used to store the current location of the user
+ public var  currentLocationCoordinates = CLLocationCoordinate2D()
 
 usage of the above variables is:<br />
 `mapObject.userInformation = "yourData from api/json"`<br />
