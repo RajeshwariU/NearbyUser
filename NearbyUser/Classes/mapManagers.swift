@@ -12,7 +12,7 @@ import SDWebImage
 
 @objc public class mapManagers: NSObject , CLLocationManagerDelegate,GMSMapViewDelegate {
     /// This variable is for CLLocationManager
-    let locationManager = CLLocationManager()
+    var locationManager : CLLocationManager = CLLocationManager()
     /// This variable stores the radius in string
     var radiusString = String()
     /// This variable is for GMSMapView
@@ -31,13 +31,16 @@ import SDWebImage
     @objc public var userPlaceholderImage = UIImage()
     /// This variable is used to store the zoom value of the map
     var currentZoom : Float = Float()
-    
+    /// This variable is used to store GMSMapView
+    var commonGoogleMapView : GMSMapView = GMSMapView()
     
     
     // MARK: - CLLocationManager Delegates
-    private func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         locationManager.stopUpdatingLocation()
         locationManager.startUpdatingLocation()
+        let location = manager.location?.coordinate
+        cameraMoveToLocation(toLocation: location, googleMapView: commonGoogleMapView)
     }
     
     // MARK: - Public methods
@@ -54,18 +57,17 @@ import SDWebImage
         // Ask for Authorisation from the User.
         locationManager.requestWhenInUseAuthorization()
         if CLLocationManager.locationServicesEnabled() {
-            googleMapView.delegate = self
+            locationManager = CLLocationManager()
+            commonGoogleMapView = googleMapView
+            commonGoogleMapView.delegate = self
             locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             locationManager.distanceFilter = 10
-            locationManager.startUpdatingLocation()
             locationManager.startMonitoringSignificantLocationChanges()
+            locationManager.startUpdatingLocation()
             radiusString = getRadius
-            let location = locationManager.location?.coordinate
-            cameraMoveToLocation(toLocation: location, googleMapView: googleMapView)
-            
         }
-        return googleMapView
+        return commonGoogleMapView
     }
     
     /// This is used to zoom the user currentLocation with radius using GMSCircle
