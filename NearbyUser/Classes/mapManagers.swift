@@ -58,12 +58,15 @@ import ACProgressHUD_Swift
             locationManager = CLLocationManager()
             commonGoogleMapView = googleMapView
             commonGoogleMapView.delegate = self
+            commonGoogleMapView.settings.myLocationButton = true
+            commonGoogleMapView.padding = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 30)
             commonGoogleMapView.isOpaque = false
             commonGoogleMapView.alpha = CGFloat(0.3)
             ACProgressHUD.shared.progressText = ""
             ACProgressHUD.shared.hudBackgroundColor = .clear
             ACProgressHUD.shared.showHUD()
             locationManager.delegate = self
+            currentLocationCoordinates = (self.locationManager.location?.coordinate)!
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.distanceFilter = 10
             locationManager.startMonitoringSignificantLocationChanges()
@@ -87,7 +90,6 @@ import ACProgressHUD_Swift
     /// - googleMapView: GMSMapView
     func cameraMoveToLocation(toLocation: CLLocationCoordinate2D?, googleMapView: GMSMapView) {
         if toLocation != nil {
-            currentLocationCoordinates = toLocation!
             var toMeter : Double  = Double(radiusString)!
             toMeter = toMeter * 1000
             let circle = GMSCircle()
