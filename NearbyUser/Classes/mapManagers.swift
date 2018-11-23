@@ -9,6 +9,8 @@ import UIKit
 import CoreLocation
 import GoogleMaps
 import SDWebImage
+import KRProgressHUD
+
 
 @objc public class mapManagers: NSObject , CLLocationManagerDelegate,GMSMapViewDelegate {
     /// This variable is for CLLocationManager
@@ -58,7 +60,11 @@ import SDWebImage
             locationManager = CLLocationManager()
             commonGoogleMapView = googleMapView
             commonGoogleMapView.delegate = self
-            locationManager.delegate = self
+            commonGoogleMapView.isHidden = true
+            KRProgressHUD
+                .set(style: .custom(background: .clear, text: .clear, icon: nil))
+                .set(maskType: .white)
+                .show()            locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.distanceFilter = 10
             locationManager.startMonitoringSignificantLocationChanges()
@@ -67,6 +73,8 @@ import SDWebImage
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 let location = self.locationManager.location?.coordinate
                 self.cameraMoveToLocation(toLocation: location, googleMapView: self.commonGoogleMapView)
+                KRProgressHUD.dismiss()
+                self.commonGoogleMapView.isHidden = false
             }
             
         }
@@ -95,7 +103,7 @@ import SDWebImage
                 currentZoom = 10.0
             }
             // Add it to the map
-            circle.map?.camera = GMSCameraPosition.camera(withTarget: toLocation!, zoom: currentZoom)
+            circle.map?.camera = GMSCameraPosition.camera(withTarget: toLocation!, zoom: 10.0)
             setMarkerForAllNearByUsers(userInformation: userInformation, googleMapView: googleMapView)
             print(currentZoom)
         }

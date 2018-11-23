@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'NearbyUser'
-  s.version          = '0.1.3'
+  s.version          = '0.1.4'
   s.summary          = 'Used to find the nearby users.'
 
 # This description is used to generate tags and improve search results.
@@ -42,4 +42,5 @@ TODO: This library is used to find the nearByUsers from your current location.
   s.dependency 'GoogleMaps'
   s.dependency 'GooglePlaces'
   s.dependency 'SDWebImage', '~> 4.0'
+  s.dependency 'KRProgressHUD'
 end
