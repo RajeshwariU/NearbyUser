@@ -31,8 +31,6 @@ import ACProgressHUD_Swift
     @objc public var pinImage = UIImage()
     /// This variable is used to placeholder image
     @objc public var userPlaceholderImage = UIImage()
-    /// This variable is used to store the zoom value of the map
-    var currentZoom : Float = Float()
     /// This variable is used to store GMSMapView
     var commonGoogleMapView : GMSMapView = GMSMapView()
     
@@ -60,7 +58,8 @@ import ACProgressHUD_Swift
             locationManager = CLLocationManager()
             commonGoogleMapView = googleMapView
             commonGoogleMapView.delegate = self
-            commonGoogleMapView.isHidden = true
+            commonGoogleMapView.isOpaque = false
+            commonGoogleMapView.alpha = CGFloat(0.3)
             ACProgressHUD.shared.progressText = ""
             ACProgressHUD.shared.hudBackgroundColor = .clear
             ACProgressHUD.shared.showHUD()
@@ -74,7 +73,8 @@ import ACProgressHUD_Swift
                 let location = self.locationManager.location?.coordinate
                 self.cameraMoveToLocation(toLocation: location, googleMapView: self.commonGoogleMapView)
                 ACProgressHUD.shared.hideHUD()
-                self.commonGoogleMapView.isHidden = false
+                self.commonGoogleMapView.isOpaque = true
+                self.commonGoogleMapView.alpha = CGFloat(1.0)
             }
             
         }
@@ -92,23 +92,22 @@ import ACProgressHUD_Swift
             toMeter = toMeter * 1000
             let circle = GMSCircle()
             circle.radius = toMeter // Meters
+            // SET ZOOM LEVEL
+            var zoomLevel: Int = 10
+            let radius: Double = toMeter + toMeter / 2
+            let scale: Double = radius / 500
+            zoomLevel = Int(16 - log(scale) / log(2))
+            zoomLevel += 1
             circle.fillColor = UIColor.lightGray.withAlphaComponent(0.5)
             circle.position = toLocation! // Your CLLocationCoordinate2D  position
             circle.strokeWidth = 0.2;
             circle.strokeColor = UIColor.lightGray
             circle.map = googleMapView;
-            currentZoom = googleMapView.camera.zoom
-            if currentZoom <= 4.0
-            {
-                currentZoom = 10.0
-            }
             // Add it to the map
-            circle.map?.camera = GMSCameraPosition.camera(withTarget: toLocation!, zoom: 10.0)
+            circle.map?.camera = GMSCameraPosition.camera(withTarget: toLocation!, zoom: Float(zoomLevel))
             setMarkerForAllNearByUsers(userInformation: userInformation, googleMapView: googleMapView)
-            print(currentZoom)
         }
     }
-    
     
     /// This method is to get all users within the radius
     ///
