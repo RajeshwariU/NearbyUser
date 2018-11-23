@@ -9,7 +9,7 @@ import UIKit
 import CoreLocation
 import GoogleMaps
 import SDWebImage
-import KRProgressHUD
+import ACProgressHUD_Swift
 
 
 @objc public class mapManagers: NSObject , CLLocationManagerDelegate,GMSMapViewDelegate {
@@ -61,10 +61,10 @@ import KRProgressHUD
             commonGoogleMapView = googleMapView
             commonGoogleMapView.delegate = self
             commonGoogleMapView.isHidden = true
-            KRProgressHUD
-                .set(style: .custom(background: .clear, text: .clear, icon: nil))
-                .set(maskType: .white)
-                .show()            locationManager.delegate = self
+            ACProgressHUD.shared.progressText = ""
+            ACProgressHUD.shared.hudBackgroundColor = .clear
+            ACProgressHUD.shared.showHUD()
+            locationManager.delegate = self
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.distanceFilter = 10
             locationManager.startMonitoringSignificantLocationChanges()
@@ -73,7 +73,7 @@ import KRProgressHUD
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 let location = self.locationManager.location?.coordinate
                 self.cameraMoveToLocation(toLocation: location, googleMapView: self.commonGoogleMapView)
-                KRProgressHUD.dismiss()
+                ACProgressHUD.shared.hideHUD()
                 self.commonGoogleMapView.isHidden = false
             }
             
