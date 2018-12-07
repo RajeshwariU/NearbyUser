@@ -183,7 +183,7 @@ import ACProgressHUD_Swift
         }
     }
     
-    func runTimedCode() {
+    @objc func runTimedCode() {
         for user in userInformation {
             let userLat = user[kLatitude]
             let userLon = user[kLongitude]
