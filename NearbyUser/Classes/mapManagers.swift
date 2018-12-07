@@ -41,8 +41,17 @@ import ACProgressHUD_Swift
     @objc public var isFromSlider = true
     /// To get centre map coordinates
     var centerMapCoordinate : CLLocationCoordinate2D!
-
-
+    
+    var myTimer : Timer!
+    
+    lazy var circle: GMSCircle = {
+        var radiusCircle = GMSCircle()
+        radiusCircle.fillColor = UIColor(red: 211.0/255, green: 225.0/255, blue: 247.0/255, alpha: 0.3)
+        radiusCircle.position = CLLocationCoordinate2D(latitude: 0.000, longitude: 0.000)
+        radiusCircle.strokeWidth = 0.2;
+        radiusCircle.strokeColor = UIColor.blue
+        return radiusCircle
+    }()
     
     var currentZoom = Float()
     
@@ -50,7 +59,6 @@ import ACProgressHUD_Swift
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         locationManager.stopUpdatingLocation()
         locationManager.startUpdatingLocation()
-       
     }
     
     // MARK: - Public methods
@@ -107,7 +115,6 @@ import ACProgressHUD_Swift
         if toLocation != nil {
             var toMeter : Double  = Double(radiusString)!
             toMeter = toMeter * 1000
-            let circle = GMSCircle()
             circle.radius = toMeter // Meters
             // SET ZOOM LEVEL
             var zoomLevel: Int = 10
@@ -115,10 +122,7 @@ import ACProgressHUD_Swift
             let scale: Double = radius / 500
             zoomLevel = Int(16 - log(scale) / log(2))
             zoomLevel += 1
-            circle.fillColor = UIColor(red: 211.0/255, green: 225.0/255, blue: 247.0/255, alpha: 0.5)
             circle.position = toLocation! // Your CLLocationCoordinate2D  position
-            circle.strokeWidth = 0.2;
-            circle.strokeColor = UIColor.blue
             circle.map = googleMapView;
             currentZoom = googleMapView.camera.zoom
             if isMapLoadingFirstTime {
@@ -162,41 +166,9 @@ import ACProgressHUD_Swift
             markersArray.removeAll()
             visibleUser.removeAll()
             commonGoogleMapView.clear()
-            for user in userInformation {
-                let userLat = user[kLatitude]
-                let userLon = user[kLongitude]
-                let latitudess = (userLat as NSString?)!.doubleValue
-                let longitudess = (userLon as NSString?)!.doubleValue
-                let myLocation = CLLocation(latitude: currentLocationCoordinates.latitude, longitude: currentLocationCoordinates.longitude)
-                let newLocation = CLLocation(latitude: latitudess, longitude: longitudess)
-                let distanceKiloMeters = (myLocation.distance(from: newLocation))/1000
-                let toKiloMeter : Double  = Double(radiusString)!
-                if(distanceKiloMeters <= toKiloMeter)
-                {
-                    let user_marker = GMSMarker()
-                    let view = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
-                    let pinImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
-                    pinImageView.image = pinImage
-                    let groupImage = UIImageView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
-                    groupImage.backgroundColor = UIColor.lightGray
-                    if let userProfile = user[kUserImage] {
-                        groupImage.sd_setImage(with: URL(string: userProfile), placeholderImage: userPlaceholderImage)
-                    } else {
-                        groupImage.image = userPlaceholderImage
-                    }
-                    view.addSubview(pinImageView)
-                    groupImage.layer.cornerRadius = 40
-                    groupImage.layer.masksToBounds = true
-                    view.addSubview(groupImage)
-                    let markerIcon: UIImage? = image(from: view)
-                    user_marker.icon = markerIcon
-                    user_marker.position = CLLocationCoordinate2D(latitude: latitudess, longitude: longitudess)
-                    user_marker.map = googleMapView
-                    markersArray .append(user_marker)
-                    visibleUser.append(user)
-                    print("Marker Added")
-                }
-            }
+            myTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(runTimedCode), userInfo: nil, repeats: false)
+                    self.runTimedCode()
+            
         } else {
             var index = 0
             for marker in markersArray {
@@ -207,6 +179,47 @@ import ACProgressHUD_Swift
                 let longitudess = (userLon as NSString?)!.doubleValue
                 marker.position = CLLocationCoordinate2D(latitude: latitudess, longitude: longitudess)
                 index += 1
+            }
+        }
+    }
+    
+    func runTimedCode() {
+        for user in userInformation {
+            let userLat = user[kLatitude]
+            let userLon = user[kLongitude]
+            let latitudess = (userLat as NSString?)!.doubleValue
+            let longitudess = (userLon as NSString?)!.doubleValue
+            let myLocation = CLLocation(latitude: currentLocationCoordinates.latitude, longitude: currentLocationCoordinates.longitude)
+            let newLocation = CLLocation(latitude: latitudess, longitude: longitudess)
+            let distanceKiloMeters = (myLocation.distance(from: newLocation))/1000
+            let toKiloMeter : Double  = Double(radiusString)!
+            if(distanceKiloMeters <= toKiloMeter)
+            {
+                let user_marker = GMSMarker()
+                let view = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
+                let pinImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 70, height: 70))
+                pinImageView.image = pinImage
+                let groupImage = UIImageView(frame: CGRect(x: 0, y: 0, width: 80, height: 80))
+                groupImage.backgroundColor = UIColor.lightGray
+                if let userProfile = user[kUserImage] {
+                    groupImage.sd_setImage(with: URL(string: userProfile), placeholderImage: userPlaceholderImage)
+                } else {
+                    groupImage.image = userPlaceholderImage
+                
+                    }
+                view.addSubview(pinImageView)
+                groupImage.layer.cornerRadius = 40
+                groupImage.layer.masksToBounds = true
+                view.addSubview(groupImage)
+//                let markerIcon: UIImage? = image(from: view)
+//                user_marker.icon = markerIcon
+                user_marker.iconView = groupImage
+                user_marker.position = CLLocationCoordinate2D(latitude: latitudess, longitude: longitudess)
+                user_marker.map = commonGoogleMapView
+                markersArray.append(user_marker)
+                visibleUser.append(user)
+                print("Marker Added")
+                myTimer.invalidate()
             }
         }
     }
